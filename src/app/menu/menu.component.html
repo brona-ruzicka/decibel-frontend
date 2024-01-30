@@ -1,0 +1,25 @@
+
+<main>
+  <nav>
+    <div class="nav-right hidden-xs">
+      <div class="button" id="btn">
+        <div class="bar top"></div>
+        <div class="bar middle"></div>
+        <div class="bar bottom"></div>
+      </div>
+    </div>
+  </nav>
+</main>
+
+<div class="sidebar">
+  <ul  class="sidebar-list">
+
+    @for (item_data of Menu_item_data; track item_data.file) {
+    <li class="sidebar-item">
+      <div class="sidebar-anchor">{{item_data.name}}</div>
+      <audio controls><source [src]={{item_data.file}}/></audio>
+    </li>
+    }
+
+  </ul>
+</div>
