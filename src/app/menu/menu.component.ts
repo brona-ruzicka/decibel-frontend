@@ -1,7 +1,7 @@
 import { Component , inject } from '@angular/core';
-import {Menu_item_data} from "./menu_item_data";
-import {Menu_itemService} from "./menu_item.service";
-import {NgForOf} from "@angular/common";
+import {SoundData} from "../sound/sound_data";
+import {SoundService} from "../sound/sound.service";
+import { CommonModule } from "@angular/common";
 
 
 
@@ -9,7 +9,7 @@ import {NgForOf} from "@angular/common";
   selector: 'app-menu',
   standalone: true,
   imports: [
-    NgForOf
+    CommonModule
   ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
@@ -17,18 +17,38 @@ import {NgForOf} from "@angular/common";
 
 
 export class MenuComponent {
-  Menu_ItemService= inject(Menu_itemService);
 
-  Menu_item_data: Menu_item_data[] = [];
+  sounds: SoundData[] = [];
 
-  constructor() {
-    this.Menu_item_data = this.Menu_ItemService.getAllPosts()
+  constructor(
+    private soundService: SoundService
+  ) {
+    soundService.sounds.then(sounds => this.sounds = sounds)
   }
 
+  private audio: HTMLAudioElement = new Audio();
+  private playing: boolean = false;
+  private currentMusic: string | null = null;
 
+  play_audio(file_url:any){
+      this.stopMusic();
+      this.audio.src = file_url;
+      this.audio.play();
+      this.playing = true;
+      this.currentMusic = file_url;
 
+      // Wait until the music finishes playing
+      this.audio.addEventListener('ended', () => {
+        this.stopMusic();
+      });
+    }
+    stopMusic(): void {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+      this.playing = false;
+      this.currentMusic = null;
+    }
 }
-
 
 
 document.addEventListener("DOMContentLoaded", () => {

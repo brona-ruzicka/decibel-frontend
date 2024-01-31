@@ -14,12 +14,11 @@
 <div class="sidebar">
   <ul  class="sidebar-list">
 
-    @for (item_data of Menu_item_data; track item_data.file) {
-    <li class="sidebar-item">
-      <div class="sidebar-anchor">{{item_data.name}}</div>
-      <audio controls><source [src]={{item_data.file}}/></audio>
+    <li *ngFor="let sound of sounds" class="sidebar-item">
+      <div class="sidebar-anchor">{{sound.name}}</div>
+      <div class="audio" (click)="play_audio(sound?.url)">
+      </div>
     </li>
-    }
 
   </ul>
 </div>
