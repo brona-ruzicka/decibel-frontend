@@ -35,6 +35,7 @@ main {
 }
 
 .sidebar-list {
+  display: grid;
   padding: 0;
   list-style: none;
   margin-left: 10px;
@@ -42,8 +43,8 @@ main {
 }
 
 .sidebar-item {
-  margin: 2px 0;
   opacity: 0;
+  display: flex;
 }
 
 .sidebar-item.active {
@@ -52,17 +53,29 @@ main {
 .sidebar-anchor {
   color: #FFF;
   text-decoration: none;
-  font-size: 1.2em;
+  font-size: 1.5em;
   text-transform: uppercase;
   position: relative;
+  margin-right: 2vw;
   padding-bottom: 3px;
 }
 
-.audio{
-  background: aqua;
-  height: 20px;
-  width: 20px;
+
+ .material-symbols-outlined {
+   cursor: pointer;
+   background: #FFFFFF;
+   border-radius: 5px;
+   font-variation-settings:
+     'FILL' 0,
+     'wght' 4000,
+     'GRAD' 10,
+     'opsz' 28
+ }
+
+.material-symbols-outlined:hover{
+  background: #b2b0b0;
 }
+
 
 @media screen and (max-width: 768px) {
 
