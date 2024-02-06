@@ -1,0 +1,28 @@
+<section
+  class="group-section"
+  *ngFor="let group of groupsWithSelection$ | async"
+>
+  <span class="group-checkbox">
+    <mat-checkbox
+      class="margin"
+      [checked]="group.selected !== 'none'"
+      [indeterminate]="group.selected === 'some'"
+      (change)="selectGroup(group, $event.checked)"
+    >
+      {{group.name}}
+    </mat-checkbox>
+  </span>
+  <span class="sound-checkboxes">
+    <ul>
+      <li *ngFor="let sound of group.sounds">
+        <mat-checkbox
+          class="margin"
+          [checked]="sound.selected"
+          (change)="selectSound(sound, $event.checked)"
+        >
+          {{sound.name}}
+        </mat-checkbox>
+      </li>
+    </ul>
+  </span>
+</section>

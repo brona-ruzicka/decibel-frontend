@@ -1,1 +1,19 @@
-<app-menu></app-menu>
+<main>
+  <mat-toolbar>
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Aplikace Decibel</span>
+  </mat-toolbar>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async)?.matches ? 'over' : 'side'"
+    >
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <app-body></app-body>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</main>
