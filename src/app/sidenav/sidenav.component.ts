@@ -1,6 +1,6 @@
 import {Component, DestroyRef} from '@angular/core';
 import {SoundService} from "../sound/sound.service";
-import {Group, SelectedGroup, SelectedSound, Sound, SoundId} from "../sound/sound.model";
+import {Group, GroupSelected, SelectedGroup, SelectedSound, Sound, SoundId} from '../sound/sound.model';
 import {MatCheckbox} from "@angular/material/checkbox";
 import {CommonModule} from "@angular/common";
 import {SoundModule} from "../sound/sound.module";
@@ -9,6 +9,7 @@ import {MatIconButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {FlatTreeControl} from "@angular/cdk/tree";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {map, Observable} from 'rxjs';
 
 
 interface SidebarNode {
@@ -16,7 +17,6 @@ interface SidebarNode {
   level: number,
   ref: Sound | Group
 }
-
 
 @Component({
   selector: 'app-sidenav',
@@ -36,7 +36,7 @@ export class SidenavComponent {
 
   private transformer = (node: Group | Sound, level: number): SidebarNode => {
     return {
-      group: !("id" in node),
+      group: "sounds" in node,
       level: level,
       ref: node,
     };
@@ -51,7 +51,7 @@ export class SidenavComponent {
     this.transformer,
     node => node.level,
     node => node.group,
-    node => "id" in node ? [] : node.sounds,
+    node => "sounds" in node ? node.sounds : [],
   );
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -66,16 +66,28 @@ export class SidenavComponent {
   }
 
 
-  isGroup = (_: number, node: SidebarNode) => node.group;
+  isGroupNode = (_: number, node: SidebarNode) => node.group;
 
 
-  selectGroup(group: SelectedGroup, selected: boolean) {
+
+  isGroupSelected$(group: Group): Observable<GroupSelected> {
+    return this.soundService.groupWithSelection$(group).pipe(
+      map(group => group?.selected ?? "all")
+    )
+  }
+
+  isSoundSelected$(sound: Sound): Observable<boolean> {
+    return this.soundService.soundWithSelection$(sound).pipe(
+      map(sound => sound?.selected ?? true)
+    )
+  }
+
+  selectGroup(group: Group, selected: boolean) {
     this.soundService.selectGroup(group, selected)
   }
 
-  selectSound(sound: SelectedSound, selected: boolean) {
+  selectSound(sound: Sound, selected: boolean) {
     this.soundService.selectSound(sound, selected)
   }
 
-  protected readonly JSON = JSON;
 }

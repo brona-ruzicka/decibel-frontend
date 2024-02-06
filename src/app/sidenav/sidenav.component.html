@@ -1,8 +1,9 @@
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <!-- This is the tree node template for leaf nodes -->
+
+  <!-- Sound nodes -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
     <mat-checkbox
-      [checked]="(soundService.soundWithSelection$(node.ref) | async)?.selected"
+      [checked]="isSoundSelected$(node.ref) | async"
       (change)="selectSound(node.ref, $event.checked)"
     >
       {{node.ref.name}}
@@ -12,11 +13,11 @@
     </button>
   </mat-tree-node>
 
-  <!-- This is the tree node template for expandable nodes -->
-  <mat-tree-node *matTreeNodeDef="let node; when: isGroup" matTreeNodePadding>
+  <!-- Group nodes -->
+  <mat-tree-node *matTreeNodeDef="let node; when: isGroupNode" matTreeNodePadding>
     <mat-checkbox
-      [checked]="(soundService.groupWithSelection$(node.ref) | async)?.selected !== 'none'"
-      [indeterminate]="(soundService.groupWithSelection$(node.ref) | async)?.selected === 'some'"
+      [checked]="(isGroupSelected$(node.ref) | async) !== 'none'"
+      [indeterminate]="(isGroupSelected$(node.ref) | async) === 'some'"
       (change)="selectGroup(node.ref, $event.checked)"
     >
       {{node.ref.name}}
