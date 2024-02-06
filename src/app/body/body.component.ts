@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {SoundModule} from "../sound/sound.module";
 import {SoundService} from "../sound/sound.service";

@@ -1,8 +1,10 @@
 import {DestroyRef, Injectable} from '@angular/core';
 import {Group, GroupSelected, SelectedGroup, SelectedSound, Sound, SoundData, SoundId} from "./sound.model";
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, combineLatest, map, Observable, shareReplay} from "rxjs";
+import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, switchMap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {asObservable, MaybeObservable} from "../../util/maybeObservable";
+import {Optional} from "../../util/optional";
 
 @Injectable({
   providedIn: 'root',
@@ -132,6 +134,33 @@ export class SoundService {
     );
 
   }
+
+  soundWithSelection$(sound$: MaybeObservable<Sound>): Observable<Optional<SelectedSound>> {
+    return asObservable(sound$).pipe(
+      switchMap(sound =>
+        this.soundsWithSelection$.pipe(
+          map(soundWithSelection =>
+            soundWithSelection.find(soundWithSelection => soundWithSelection.id == sound.id)
+          )
+        )
+      ),
+      distinctUntilChanged()
+    );
+  }
+
+  groupWithSelection$(group$: MaybeObservable<Group>): Observable<Optional<SelectedGroup>> {
+    return asObservable(group$).pipe(
+      switchMap(group =>
+        this.groupsWithSelection$.pipe(
+          map(groupsWithSelection =>
+            groupsWithSelection.find(groupWithSelection => groupWithSelection.name == group.name)
+          )
+        )
+      ),
+      distinctUntilChanged()
+    );
+  }
+
 
   selectSound(sound: Sound, selected: boolean) {
     const deselected = new Set(this.deselectedSubject.getValue());
