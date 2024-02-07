@@ -1,5 +1,7 @@
-<mat-list>
-  <mat-list-item *ngFor="let sound of selectedSounds$ | async">
-    <b>{{sound.name}}:</b> {{sound.url}}
-  </mat-list-item>
-</mat-list>
+<div class="center">
+  <button mat-raised-button
+    (click)="playRandom()"
+  >
+    Play random
+  </button>
+</div>

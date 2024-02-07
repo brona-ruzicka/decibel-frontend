@@ -1,15 +1,16 @@
-import {Component, DestroyRef} from '@angular/core';
-import {SoundService} from "../sound/sound.service";
-import {Group, GroupSelected, SelectedGroup, SelectedSound, Sound, SoundId} from '../sound/sound.model';
-import {MatCheckbox} from "@angular/material/checkbox";
-import {CommonModule} from "@angular/common";
-import {SoundModule} from "../sound/sound.module";
-import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule} from "@angular/material/tree";
-import {MatIconButton} from "@angular/material/button";
-import {MatIcon} from "@angular/material/icon";
-import {FlatTreeControl} from "@angular/cdk/tree";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {ChangeDetectionStrategy, Component, DestroyRef} from '@angular/core';
+import {SoundService} from '../sound/sound.service';
+import {Group, GroupSelection, Sound} from '../sound/sound.model';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {CommonModule} from '@angular/common';
+import {SoundModule} from '../sound/sound.module';
+import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule} from '@angular/material/tree';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {map, Observable} from 'rxjs';
+import {AudioService} from '../audio/audio.service';
 
 
 interface SidebarNode {
@@ -30,7 +31,8 @@ interface SidebarNode {
     MatIcon,
   ],
   templateUrl: './sidenav.component.html',
-  styleUrl: './sidenav.component.scss'
+  styleUrl: './sidenav.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidenavComponent {
 
@@ -57,7 +59,11 @@ export class SidenavComponent {
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
 
-  constructor(protected soundService: SoundService, destroyRef: DestroyRef) {
+  constructor(
+    private audioService: AudioService,
+    private soundService: SoundService,
+    destroyRef: DestroyRef
+  ) {
     soundService.groups$
       .pipe(
         takeUntilDestroyed(destroyRef)
@@ -70,7 +76,7 @@ export class SidenavComponent {
 
 
 
-  isGroupSelected$(group: Group): Observable<GroupSelected> {
+  isGroupSelected$(group: Group): Observable<GroupSelection> {
     return this.soundService.groupWithSelection$(group).pipe(
       map(group => group?.selected ?? "all")
     )
@@ -90,4 +96,12 @@ export class SidenavComponent {
     this.soundService.selectSound(sound, selected)
   }
 
+
+  loadSound(sound: Sound) {
+    this.audioService.load(sound);
+  }
+
+  playSound(sound: Sound) {
+    this.audioService.play(sound);
+  }
 }

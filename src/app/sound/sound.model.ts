@@ -17,7 +17,7 @@ export interface Sound {
   group: string
 }
 
-export interface SelectedSound extends Sound {
+export interface SoundWithSelection extends Sound {
   selected: boolean
 }
 
@@ -28,9 +28,9 @@ export interface Group {
   sounds: Sound[]
 }
 
-export type GroupSelected = "all" | "some" | "none";
+export type GroupSelection = "all" | "some" | "none";
 
-export interface SelectedGroup extends Group {
-  sounds: SelectedSound[]
-  selected: GroupSelected
+export interface GroupWithSelection extends Group {
+  sounds: SoundWithSelection[]
+  selected: GroupSelection
 }

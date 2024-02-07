@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {AsyncPipe} from "@angular/common";
 import {MatIconModule} from "@angular/material/icon";
@@ -16,7 +16,8 @@ import {BodyComponent} from "./body/body.component";
   standalone: true,
   imports: [CommonModule, AsyncPipe, MatSidenavModule, MatNavList, MatListItem, MatIconButton, MatIconModule, MatToolbarModule, SidenavComponent, BodyComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'decibel-frontend';

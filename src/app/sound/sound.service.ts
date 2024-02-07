@@ -1,5 +1,5 @@
 import {DestroyRef, Injectable} from '@angular/core';
-import {Group, GroupSelected, SelectedGroup, SelectedSound, Sound, SoundData, SoundId} from "./sound.model";
+import {Group, GroupSelection, GroupWithSelection, SoundWithSelection, Sound, SoundData, SoundId} from "./sound.model";
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, switchMap} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
@@ -21,10 +21,10 @@ export class SoundService {
   private deselectedSubject: BehaviorSubject<Set<SoundId>>;
   deselected$: Observable<Set<SoundId>>;
 
-  soundsWithSelection$: Observable<SelectedSound[]>;
-  groupsWithSelection$: Observable<SelectedGroup[]>;
+  soundsWithSelection$: Observable<SoundWithSelection[]>;
+  groupsWithSelection$: Observable<GroupWithSelection[]>;
 
-  selectedSounds$: Observable<SelectedSound[]>;
+  selectedSounds$: Observable<Sound[]>;
 
 
   constructor(http: HttpClient, destroyRef: DestroyRef) {
@@ -42,6 +42,7 @@ export class SoundService {
           }))
           .sort((a,b) => a.name.localeCompare(b.name))
         ),
+        distinctUntilChanged(),
         shareReplay(1)
       );
 
@@ -60,6 +61,7 @@ export class SoundService {
           })
           .sort((a,b) => a.name.localeCompare(b.name))
         ),
+        distinctUntilChanged(),
         shareReplay(1)
       );
 
@@ -68,18 +70,21 @@ export class SoundService {
     const initialDeselected = savedDeselected ? JSON.parse(savedDeselected) : [];
 
     this.deselectedSubject = new BehaviorSubject(new Set(initialDeselected));
-    this.deselectedSubject
+    this.deselected$ = this.deselectedSubject.asObservable()
+      .pipe(
+        distinctUntilChanged()
+      );
+
+    this.deselected$
       .pipe(
         takeUntilDestroyed(destroyRef)
       )
       .subscribe(deselected =>
         localStorage.setItem(
           this.DESELECTED_KEY,
-          JSON.stringify(Array.from(deselected.keys())
-          ))
+          JSON.stringify(Array.from(deselected.keys()))
+        )
       );
-
-    this.deselected$ = this.deselectedSubject.asObservable();
 
 
     this.soundsWithSelection$ = combineLatest(
@@ -94,6 +99,7 @@ export class SoundService {
         }));
       }
     ).pipe(
+      distinctUntilChanged(),
       shareReplay(1)
     );
 
@@ -113,29 +119,36 @@ export class SoundService {
             someSelected = selected || someSelected;
             allSelected = selected && allSelected;
 
-            return { ...sound, selected } as SelectedSound;
+            return { ...sound, selected } as SoundWithSelection;
           })
 
-          const selected: GroupSelected = someSelected ? allSelected ? "all" : "some" : "none";
+          const selected: GroupSelection = someSelected ? allSelected ? "all" : "some" : "none";
 
           return {
             name: group.name,
             selected: selected,
             sounds: selectedSounds
-          } as SelectedGroup;
+          } as GroupWithSelection;
         })
     ).pipe(
+      distinctUntilChanged(),
       shareReplay(1)
     );
 
 
-    this.selectedSounds$ = this.soundsWithSelection$.pipe(
-      map(sounds => sounds.filter(sound => sound.selected))
+    this.selectedSounds$ = combineLatest(
+      [
+        this.sounds$,
+        this.deselected$
+      ],
+      (sounds, deselected) => sounds.filter(sound => !deselected.has(sound.id))
+    ).pipe(
+      distinctUntilChanged(),
+      shareReplay(1)
     );
-
   }
 
-  soundWithSelection$(sound$: MaybeObservable<Sound>): Observable<Optional<SelectedSound>> {
+  soundWithSelection$(sound$: MaybeObservable<Sound>): Observable<Optional<SoundWithSelection>> {
     return asObservable(sound$).pipe(
       switchMap(sound =>
         this.soundsWithSelection$.pipe(
@@ -148,7 +161,7 @@ export class SoundService {
     );
   }
 
-  groupWithSelection$(group$: MaybeObservable<Group>): Observable<Optional<SelectedGroup>> {
+  groupWithSelection$(group$: MaybeObservable<Group>): Observable<Optional<GroupWithSelection>> {
     return asObservable(group$).pipe(
       switchMap(group =>
         this.groupsWithSelection$.pipe(

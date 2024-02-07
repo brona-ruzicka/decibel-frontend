@@ -1,20 +1,27 @@
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
 
   <!-- Sound nodes -->
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+  <mat-tree-node matTreeNodePadding
+    *matTreeNodeDef="let node"
+    (mouseenter)="loadSound(node.ref)"
+  >
     <mat-checkbox
       [checked]="isSoundSelected$(node.ref) | async"
       (change)="selectSound(node.ref, $event.checked)"
     >
       {{node.ref.name}}
     </mat-checkbox>
-    <button mat-icon-button>
+    <button mat-icon-button
+      (click)="playSound(node.ref)"
+    >
       <mat-icon>play_arrow</mat-icon>
     </button>
   </mat-tree-node>
 
   <!-- Group nodes -->
-  <mat-tree-node *matTreeNodeDef="let node; when: isGroupNode" matTreeNodePadding>
+  <mat-tree-node matTreeNodePadding
+    *matTreeNodeDef="let node; when: isGroupNode"
+  >
     <mat-checkbox
       [checked]="(isGroupSelected$(node.ref) | async) !== 'none'"
       [indeterminate]="(isGroupSelected$(node.ref) | async) === 'some'"
@@ -28,4 +35,5 @@
       </mat-icon>
     </button>
   </mat-tree-node>
+
 </mat-tree>
