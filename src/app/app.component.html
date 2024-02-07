@@ -7,8 +7,8 @@
   </mat-toolbar>
   <mat-sidenav-container>
     <mat-sidenav #sidenav
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async)?.matches ? 'over' : 'side'"
+                 [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+                 [mode]="(isHandset$ | async)?.matches ? 'over' : 'side'"
     >
       <app-sidenav></app-sidenav>
     </mat-sidenav>

@@ -1,18 +1,18 @@
 import {DestroyRef, Injectable} from '@angular/core';
-import {Group, GroupSelection, GroupWithSelection, SoundWithSelection, Sound, SoundData, SoundId} from "./sound.model";
-import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, switchMap} from "rxjs";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {asObservable, MaybeObservable} from "../../util/maybeObservable";
-import {Optional} from "../../util/optional";
+import {Group, GroupSelection, GroupWithSelection, Sound, SoundData, SoundId, SoundWithSelection} from './sound.model';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, switchMap} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {asObservable, MaybeObservable} from '../../util/maybeObservable';
+import {Optional} from '../../util/optional';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SoundService {
 
-  private readonly API_ROOT = "https://decibel.bronaruzicka.cz/api/";
-  private readonly DESELECTED_KEY = "deselectedSounds";
+  private readonly API_ROOT = 'https://decibel.bronaruzicka.cz/api/';
+  private readonly DESELECTED_KEY = 'deselectedSounds';
 
 
   sounds$: Observable<Sound[]>;
@@ -30,7 +30,7 @@ export class SoundService {
   constructor(http: HttpClient, destroyRef: DestroyRef) {
 
     this.sounds$ = http
-      .get<SoundData[]>(this.API_ROOT + "list")
+      .get<SoundData[]>(this.API_ROOT + 'list')
       .pipe(
         map(items =>
           items.map(item => ({
@@ -40,10 +40,10 @@ export class SoundService {
             name: item.name,
             group: item.group,
           }))
-          .sort((a,b) => a.name.localeCompare(b.name))
+            .sort((a, b) => a.name.localeCompare(b.name)),
         ),
         distinctUntilChanged(),
-        shareReplay(1)
+        shareReplay(1),
       );
 
     this.groups$ = this.sounds$
@@ -54,15 +54,15 @@ export class SoundService {
               (reducer[sound.group] = reducer[sound.group] ?? []).push(sound);
               return reducer;
             },
-            {} as Record<string, Sound[]>
+            {} as Record<string, Sound[]>,
           ))
-          .map(([name, sounds]) => {
-            return {name, sounds};
-          })
-          .sort((a,b) => a.name.localeCompare(b.name))
+            .map(([name, sounds]) => {
+              return {name, sounds};
+            })
+            .sort((a, b) => a.name.localeCompare(b.name)),
         ),
         distinctUntilChanged(),
-        shareReplay(1)
+        shareReplay(1),
       );
 
 
@@ -72,41 +72,41 @@ export class SoundService {
     this.deselectedSubject = new BehaviorSubject(new Set(initialDeselected));
     this.deselected$ = this.deselectedSubject.asObservable()
       .pipe(
-        distinctUntilChanged()
+        distinctUntilChanged(),
       );
 
     this.deselected$
       .pipe(
-        takeUntilDestroyed(destroyRef)
+        takeUntilDestroyed(destroyRef),
       )
       .subscribe(deselected =>
         localStorage.setItem(
           this.DESELECTED_KEY,
-          JSON.stringify(Array.from(deselected.keys()))
-        )
+          JSON.stringify(Array.from(deselected.keys())),
+        ),
       );
 
 
     this.soundsWithSelection$ = combineLatest(
       [
         this.sounds$,
-        this.deselected$
+        this.deselected$,
       ],
       (sounds, deselected) => {
         return sounds.map(sound => ({
           ...sound,
-          selected: !deselected.has(sound.id)
+          selected: !deselected.has(sound.id),
         }));
-      }
+      },
     ).pipe(
       distinctUntilChanged(),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.groupsWithSelection$ = combineLatest(
       [
         this.groups$,
-        this.deselected$
+        this.deselected$,
       ],
       (groups, deselected) =>
         groups.map(group => {
@@ -119,32 +119,32 @@ export class SoundService {
             someSelected = selected || someSelected;
             allSelected = selected && allSelected;
 
-            return { ...sound, selected } as SoundWithSelection;
-          })
+            return {...sound, selected} as SoundWithSelection;
+          });
 
-          const selected: GroupSelection = someSelected ? allSelected ? "all" : "some" : "none";
+          const selected: GroupSelection = someSelected ? allSelected ? 'all' : 'some' : 'none';
 
           return {
             name: group.name,
             selected: selected,
-            sounds: selectedSounds
+            sounds: selectedSounds,
           } as GroupWithSelection;
-        })
+        }),
     ).pipe(
       distinctUntilChanged(),
-      shareReplay(1)
+      shareReplay(1),
     );
 
 
     this.selectedSounds$ = combineLatest(
       [
         this.sounds$,
-        this.deselected$
+        this.deselected$,
       ],
-      (sounds, deselected) => sounds.filter(sound => !deselected.has(sound.id))
+      (sounds, deselected) => sounds.filter(sound => !deselected.has(sound.id)),
     ).pipe(
       distinctUntilChanged(),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
@@ -153,11 +153,11 @@ export class SoundService {
       switchMap(sound =>
         this.soundsWithSelection$.pipe(
           map(soundWithSelection =>
-            soundWithSelection.find(soundWithSelection => soundWithSelection.id == sound.id)
-          )
-        )
+            soundWithSelection.find(soundWithSelection => soundWithSelection.id == sound.id),
+          ),
+        ),
       ),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
   }
 
@@ -166,11 +166,11 @@ export class SoundService {
       switchMap(group =>
         this.groupsWithSelection$.pipe(
           map(groupsWithSelection =>
-            groupsWithSelection.find(groupWithSelection => groupWithSelection.name == group.name)
-          )
-        )
+            groupsWithSelection.find(groupWithSelection => groupWithSelection.name == group.name),
+          ),
+        ),
       ),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
   }
 

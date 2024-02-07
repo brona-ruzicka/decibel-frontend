@@ -2,17 +2,17 @@
 
   <!-- Sound nodes -->
   <mat-tree-node matTreeNodePadding
-    *matTreeNodeDef="let node"
-    (mouseenter)="loadSound(node.ref)"
+                 *matTreeNodeDef="let node"
+                 (mouseenter)="loadSound(node.ref)"
   >
     <mat-checkbox
       [checked]="isSoundSelected$(node.ref) | async"
       (change)="selectSound(node.ref, $event.checked)"
     >
-      {{node.ref.name}}
+      {{ node.ref.name }}
     </mat-checkbox>
     <button mat-icon-button
-      (click)="playSound(node.ref)"
+            (click)="playSound(node.ref)"
     >
       <mat-icon>play_arrow</mat-icon>
     </button>
@@ -20,18 +20,18 @@
 
   <!-- Group nodes -->
   <mat-tree-node matTreeNodePadding
-    *matTreeNodeDef="let node; when: isGroupNode"
+                 *matTreeNodeDef="let node; when: isGroupNode"
   >
     <mat-checkbox
       [checked]="(isGroupSelected$(node.ref) | async) !== 'none'"
       [indeterminate]="(isGroupSelected$(node.ref) | async) === 'some'"
       (change)="selectGroup(node.ref, $event.checked)"
     >
-      {{node.ref.name}}
+      {{ node.ref.name }}
     </mat-checkbox>
     <button mat-icon-button matTreeNodeToggle>
       <mat-icon class="mat-icon-rtl-mirror">
-        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </button>
   </mat-tree-node>

@@ -1,4 +1,4 @@
-import {isObservable, Observable, of} from "rxjs";
+import {isObservable, Observable, of} from 'rxjs';
 
 
 export type MaybeObservable<T> = T | Observable<T>;

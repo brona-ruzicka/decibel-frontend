@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Sound} from '../sound/sound.model';
-import {MatSnackBar} from '@angular/material/snack-bar';
 
 
 @Injectable({
@@ -12,7 +11,7 @@ export class AudioService {
   private loaded: Record<string, HTMLAudioElement | null> = {};
 
   play(sound: Sound) {
-    const audio = this.loaded[sound.url] ?? ( this.loaded[sound.url] = new Audio(sound.url) );
+    const audio = this.loaded[sound.url] ?? (this.loaded[sound.url] = new Audio(sound.url));
 
     if (this.playing) {
       this.playing.pause();
@@ -20,7 +19,7 @@ export class AudioService {
     }
 
     this.playing = audio;
-    audio.play().catch(err => {});
+    audio.play().catch(err => { });
   }
 
   load(sound: Sound) {

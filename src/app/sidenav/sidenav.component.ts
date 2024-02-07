@@ -32,13 +32,13 @@ interface SidebarNode {
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavComponent {
 
   private transformer = (node: Group | Sound, level: number): SidebarNode => {
     return {
-      group: "sounds" in node,
+      group: 'sounds' in node,
       level: level,
       ref: node,
     };
@@ -53,7 +53,7 @@ export class SidenavComponent {
     this.transformer,
     node => node.level,
     node => node.group,
-    node => "sounds" in node ? node.sounds : [],
+    node => 'sounds' in node ? node.sounds : [],
   );
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -62,11 +62,11 @@ export class SidenavComponent {
   constructor(
     private audioService: AudioService,
     private soundService: SoundService,
-    destroyRef: DestroyRef
+    destroyRef: DestroyRef,
   ) {
     soundService.groups$
       .pipe(
-        takeUntilDestroyed(destroyRef)
+        takeUntilDestroyed(destroyRef),
       )
       .subscribe(groups => this.dataSource.data = groups);
   }
@@ -75,25 +75,24 @@ export class SidenavComponent {
   isGroupNode = (_: number, node: SidebarNode) => node.group;
 
 
-
   isGroupSelected$(group: Group): Observable<GroupSelection> {
     return this.soundService.groupWithSelection$(group).pipe(
-      map(group => group?.selected ?? "all")
-    )
+      map(group => group?.selected ?? 'all'),
+    );
   }
 
   isSoundSelected$(sound: Sound): Observable<boolean> {
     return this.soundService.soundWithSelection$(sound).pipe(
-      map(sound => sound?.selected ?? true)
-    )
+      map(sound => sound?.selected ?? true),
+    );
   }
 
   selectGroup(group: Group, selected: boolean) {
-    this.soundService.selectGroup(group, selected)
+    this.soundService.selectGroup(group, selected);
   }
 
   selectSound(sound: Sound, selected: boolean) {
-    this.soundService.selectSound(sound, selected)
+    this.soundService.selectSound(sound, selected);
   }
 
 

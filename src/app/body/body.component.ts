@@ -10,7 +10,7 @@ import {Sound} from '../sound/sound.model';
 
 
 function shuffle<T>(array: T[]): T[] {
-  array = [ ...array ];
+  array = [...array];
 
   let currentIndex = array.length;
   while (currentIndex > 0) {
@@ -37,7 +37,7 @@ function shuffle<T>(array: T[]): T[] {
   ],
   templateUrl: './body.component.html',
   styleUrl: './body.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BodyComponent {
 
@@ -54,8 +54,8 @@ export class BodyComponent {
       takeUntilDestroyed(destroyRef),
     ).subscribe(sounds => {
       this.sounds = sounds;
-      this.loadNext(true)
-    })
+      this.loadNext(true);
+    });
 
   }
 

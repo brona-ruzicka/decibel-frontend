@@ -3,6 +3,6 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimationsAsync()
-  ]
+    provideAnimationsAsync(),
+  ],
 };
