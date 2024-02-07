@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, DestroyRef} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SoundModule} from '../sound/sound.module';
 import {SoundService} from '../sound/sound.service';
@@ -42,10 +42,10 @@ function shuffle<T>(array: T[]): T[] {
   styleUrl: './body.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BodyComponent {
+export class BodyComponent implements AfterViewInit {
+
 
   isShaking$ = this.audioService.isPlaying$;
-
 
   sounds: Sound[] = [];
   nextIndex: number = 0;
@@ -66,6 +66,7 @@ export class BodyComponent {
 
   }
 
+
   private loadNext(forceShuffle = false) {
     if (this.sounds.length == 0)
       return;
@@ -85,6 +86,13 @@ export class BodyComponent {
     }
 
     this.loadNext();
+  }
+
+
+  @ViewChild("buttonRef") buttonRef!: MatButton;
+
+  ngAfterViewInit() {
+    this.buttonRef.focus("mouse");
   }
 
 }
