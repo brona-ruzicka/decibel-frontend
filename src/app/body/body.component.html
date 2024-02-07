@@ -1,7 +1,12 @@
-<div class="center">
-  <button mat-raised-button
-          (click)="playRandom()"
+<div
+  matRipple
+  class="center"
+  (click)="playRandom()"
+  (touchstart)="playRandom()"
+>
+  <img
+    class="icon"
+    src="assets/fanda.svg"
+    alt="Decibel"
   >
-    Play random
-  </button>
 </div>

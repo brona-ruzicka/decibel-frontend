@@ -8,3 +8,19 @@
   align-items: center;
 
 }
+
+.icon {
+
+  width: 100%;
+  height: 100%;
+
+  max-width: 500px;
+  max-height: 500px;
+
+  box-sizing: border-box;
+  padding: 60px;
+
+  pointer-events: none;
+  user-select: none;
+
+}
