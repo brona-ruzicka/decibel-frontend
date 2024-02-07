@@ -18,7 +18,6 @@
     <mat-checkbox
       [checked]="isSoundSelected$(node.ref) | async"
       (change)="selectSound(node.ref, $event.checked)"
-      color="primary"
     >
       {{ node.ref.name }}
     </mat-checkbox>
@@ -39,7 +38,6 @@
       [checked]="(isGroupSelected$(node.ref) | async) !== 'none'"
       [indeterminate]="(isGroupSelected$(node.ref) | async) === 'some'"
       (change)="selectGroup(node.ref, $event.checked)"
-      color="primary"
     >
       {{ node.ref.name }}
     </mat-checkbox>
