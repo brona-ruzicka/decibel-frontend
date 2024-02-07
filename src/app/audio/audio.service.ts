@@ -1,6 +1,8 @@
-import {Injectable} from '@angular/core';
+import {DestroyRef, Injectable} from '@angular/core';
 import {Sound} from '../sound/sound.model';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {BehaviorSubject, distinctUntilChanged, map, Observable, pairwise} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 
 @Injectable({
@@ -8,39 +10,78 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 })
 export class AudioService {
 
-  private playing: HTMLAudioElement | null = null;
-  private loaded: Record<string, HTMLAudioElement | null> = {};
+  private playingSubject = new BehaviorSubject<Sound | null>(null);
+
+
+  currentSound$ = this.playingSubject.asObservable();
+  isPlaying$: Observable<boolean> = this.currentSound$
+    .pipe(
+      map(sound => sound !== null),
+      distinctUntilChanged()
+    );
+
 
   constructor(
-    private snackBar: MatSnackBar,
-  ) { }
+    destroyRef: DestroyRef,
+  ) {
 
-  play(sound: Sound) {
-    const audio = this.loaded[sound.url] ?? (this.loaded[sound.url] = new Audio(sound.url));
+    this.playingSubject
+      .pipe(
+        takeUntilDestroyed(destroyRef),
+        pairwise()
+      )
+      .subscribe(([last, next]) => {
+        if (last) {
+          const lastAudio = this.loaded[last.url]
+          lastAudio.pause();
+          lastAudio.currentTime = 0;
+        }
+        if (next) {
+          const nextAudio = this.loadAudio(next.url);
+          nextAudio.play().catch(err => null);
+        }
+      });
 
-    if (this.playing) {
-      this.playing.pause();
-      this.playing.currentTime = 0;
-    }
-
-    this.playing = audio;
-    audio.play().catch(err => null);
-
-    this.snackBar.open(
-      sound.name,
-      undefined,
-      {
-        horizontalPosition: 'right',
-        duration: 2500,
-      },
-    );
   }
+
+
+  private loaded: Record<string, HTMLAudioElement> = {};
+
+  private loadAudio(url: string): HTMLAudioElement {
+    if (url in this.loaded)
+      return this.loaded[url];
+
+    const audio = new Audio(url);
+    audio.addEventListener("ended", () =>  this.playingSubject.next(null));
+
+    this.loaded[url] = audio;
+    return audio;
+  }
+
 
   load(sound: Sound) {
-    if (this.loaded[sound.url])
-      return;
-
-    this.loaded[sound.url] = new Audio(sound.url);
+    this.loadAudio(sound.url);
   }
+
+  play(sound: Sound) {
+    this.playingSubject.next(sound);
+  }
+
+  stop() {
+    this.playingSubject.next(null);
+  }
+
+
+  // TODO
+  // snackBar() {
+  //   this.snackBar.open(
+  //     sound.name,
+  //     undefined,
+  //     {
+  //       horizontalPosition: 'right',
+  //       duration: 2500,
+  //     }
+  //   );
+  // }
 
 }
