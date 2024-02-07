@@ -24,3 +24,17 @@
   user-select: none;
 
 }
+
+
+.shaking {
+  animation: shake 300ms cubic-bezier(.36,.07,.19,.97) infinite;
+  transform: scale(1);
+}
+
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(5deg); }
+  50% { transform: translate(0, 0) rotate(0deg); }
+  75% { transform: translate(-5px, 5px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}

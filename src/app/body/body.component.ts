@@ -8,6 +8,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AudioService} from '../audio/audio.service';
 import {Sound} from '../sound/sound.model';
 import {MatRipple} from '@angular/material/core';
+import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 
 
 function shuffle<T>(array: T[]): T[] {
@@ -43,8 +44,12 @@ function shuffle<T>(array: T[]): T[] {
 })
 export class BodyComponent {
 
+  isShaking$ = this.audioService.isPlaying$;
+
+
   sounds: Sound[] = [];
   nextIndex: number = 0;
+
 
   constructor(
     private audioService: AudioService,
