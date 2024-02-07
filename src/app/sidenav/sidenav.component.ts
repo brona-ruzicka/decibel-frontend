@@ -11,6 +11,7 @@ import {FlatTreeControl} from '@angular/cdk/tree';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {map, Observable} from 'rxjs';
 import {AudioService} from '../audio/audio.service';
+import {MatDivider} from '@angular/material/divider';
 
 
 interface SidebarNode {
@@ -29,6 +30,7 @@ interface SidebarNode {
     MatCheckbox,
     MatIconButton,
     MatIcon,
+    MatDivider,
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
