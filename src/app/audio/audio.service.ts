@@ -1,6 +1,5 @@
 import {DestroyRef, Injectable} from '@angular/core';
 import {Sound} from '../sound/sound.model';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {BehaviorSubject, distinctUntilChanged, map, Observable, pairwise} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
