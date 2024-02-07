@@ -21,8 +21,9 @@ import {BodyComponent} from './body/body.component';
 export class AppComponent {
   title = 'decibel-frontend';
 
-  constructor(private breakpointObserver: BreakpointObserver) {
-  }
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+  ) { }
 
   isHandset$: Observable<BreakpointState> = this.breakpointObserver.observe(Breakpoints.Handset);
 
