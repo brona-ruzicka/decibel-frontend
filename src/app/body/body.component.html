@@ -1,8 +1,4 @@
-<div
-  matRipple
-  class="center"
-  (click)="playRandom()"
->
+<div class="container">
   <img
     class="icon"
     [class.shaking]="isShaking$ | async"
@@ -10,3 +6,9 @@
     alt="Decibel"
   >
 </div>
+<button
+  mat-button
+  class="button"
+  (click)="playRandom()"
+></button>
+
