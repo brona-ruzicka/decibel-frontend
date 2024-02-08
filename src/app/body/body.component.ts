@@ -53,11 +53,10 @@ export class BodyComponent implements AfterViewInit {
   constructor(
     private audioService: AudioService,
     soundService: SoundService,
-    destroyRef: DestroyRef,
   ) {
 
     soundService.selectedSounds$.pipe(
-      takeUntilDestroyed(destroyRef),
+      takeUntilDestroyed(),
     ).subscribe(sounds => {
       this.sounds = sounds;
       this.loadNext(true);

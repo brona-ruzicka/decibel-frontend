@@ -20,13 +20,11 @@ export class AudioService {
     );
 
 
-  constructor(
-    destroyRef: DestroyRef,
-  ) {
+  constructor() {
 
     this.playingSubject
       .pipe(
-        takeUntilDestroyed(destroyRef),
+        takeUntilDestroyed(),
         pairwise()
       )
       .subscribe(([last, next]) => {

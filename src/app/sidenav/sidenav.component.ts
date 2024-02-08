@@ -64,11 +64,10 @@ export class SidenavComponent {
   constructor(
     private audioService: AudioService,
     private soundService: SoundService,
-    destroyRef: DestroyRef,
   ) {
     soundService.groups$
       .pipe(
-        takeUntilDestroyed(destroyRef),
+        takeUntilDestroyed(),
       )
       .subscribe(groups => this.dataSource.data = groups);
   }

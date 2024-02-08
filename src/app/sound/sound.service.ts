@@ -27,7 +27,7 @@ export class SoundService {
   selectedSounds$: Observable<Sound[]>;
 
 
-  constructor(http: HttpClient, destroyRef: DestroyRef) {
+  constructor(http: HttpClient) {
 
     this.sounds$ = http
       .get<SoundData[]>(this.API_ROOT + 'list')
@@ -77,7 +77,7 @@ export class SoundService {
 
     this.deselected$
       .pipe(
-        takeUntilDestroyed(destroyRef),
+        takeUntilDestroyed(),
       )
       .subscribe(deselected =>
         localStorage.setItem(
