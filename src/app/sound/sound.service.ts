@@ -1,9 +1,9 @@
-import {DestroyRef, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Group, GroupSelection, GroupWithSelection, Sound, SoundData, SoundId, SoundWithSelection} from './sound.model';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, shareReplay, switchMap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {asObservable, MaybeObservable} from '../../util/maybeObservable';
+import {asObservable, MaybeObservable} from '../../util/maybe-observable';
 import {Optional} from '../../util/optional';
 
 @Injectable({
